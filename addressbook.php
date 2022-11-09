@@ -1,5 +1,4 @@
 <?php
-
 class addressbook
 {
     public function __construct()
@@ -10,14 +9,13 @@ class addressbook
         $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $this->fields = ["id", "name", "openingHours", "telephone", "country", "locality", "region", "code", "streetAddress"];
     }
+
     public function read($data)
     {
-        $order = in_array($data['order'], $this->fields) ? $data['order'] : "id";
-        $dir = $data['dir'] == "asc" ? "ASC" : "DESC";
+        $order = in_array($data->order, $this->fields) ? $data->order : "id";
+        $dir = $data->dir == "asc" ? "ASC" : "DESC";
         $sql = "SELECT * FROM addressbook ORDER BY $order $dir";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchAll();
+        return $this->db->query($sql)->fetchAll();
     }
     public function update($data)
     {
@@ -47,7 +45,7 @@ class addressbook
     }
     public function delete($data)
     {
-
+        $data->id = preg_replace('/\D/m', '', $data->id);
         $sql = "DELETE FROM addressbook WHERE id = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([':id' => $data->id]);
@@ -71,4 +69,12 @@ class addressbook
         ]);
         return $this->db->lastInsertId();
     }
+    public function sanatize($data)
+    {
+        foreach ($data as $key => $value) {
+            $data->$key = htmlspecialchars(trim($value));// trim(preg_replace('/(\W+)/m', ' ', $value))
+        }
+        return $data;
+    }
 }
+

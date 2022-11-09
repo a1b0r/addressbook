@@ -44,15 +44,12 @@ const addAdressbook = async (book) => {
 const deleteAdressbook = async (id) => {
   const response = await prepFetch('DELETE', id);
   makeTable();
-  console.log(await response)
   return response.json();
 }
 const editAdressbook = async (book) => {
   const response = await prepFetch('PUT', book);
   makeTable();
 }
-
-
 const makeTable = async (order = Gorder, dir = Gdir) => {
   Gorder = order;
   Gdir = dir;

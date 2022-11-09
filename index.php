@@ -1,16 +1,13 @@
 <?php
 include_once 'addressbook.php';
-$book = new addressbook();
-
 $method =  $_SERVER["REQUEST_METHOD"];
-$method = $method == "GET" ? (!count($_GET) ? '' : $method) : $method;
-$action = [
-    "POST" => 'add',
-    "PUT" => 'update',
-    "GET" => 'read',
-    "DELETE" => 'delete'
-];
+$method = ($method == "GET" && !$_GET) ? '' : $method;
 
-$data = $_POST ?: $_GET;
-$DATA = $data ?: json_decode(json_decode(file_get_contents('php://input')));
-$method ? print(json_encode($book->{$action[$method]}($DATA))) : readfile("index.html");
+$action = ["POST" => 'add', "PUT" => 'update', "GET" => 'read', 'DELETE' => 'delete'];
+
+$input = ($_POST ?: $_GET);
+$input = $input ? (object) $input : json_decode(json_decode(file_get_contents('php://input')));
+
+$book = new addressbook();
+!$input ?: $book->sanatize($input);
+$method ? print(json_encode($book->{$action[$method]}($input))) : readfile("index.html");
