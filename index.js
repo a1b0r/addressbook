@@ -1,52 +1,47 @@
 const tbody = document.querySelector('tbody');
 let Gorder = 'name';
 let Gdir = 'asc';
+const fields = ["id", "name", "openingHours", "telephone", "country", "locality", "region", "code", "streetAddress"]
 
 const addRow = (val) => {
-
+  console.log(val);
   tbody.innerHTML += `
-            <tr>
-                <td class="action">
-                <form action="index.php" id="del${val['id']}" method="post">
-                <input type="hidden"  form="del${val['id']}" value="${val['id']}" name="id" />
-                    <input type="submit" class="delete" form="del${val['id']}" name="action" value="&#128465;;" />
-                </form>
-                    <form action="index.php" id="form${val['id']}" method="post">
-                        <input type="submit" class="edit" name="action" value="&#128427;" />
-                </form>
-                </td>
-                <td><input type="text" size="1"  form="form${val['id']}" value="${val['id']}" disabled />
-                  <input type="hidden" size="1"  form="form${val['id']}" value="${val['id']}" name="id" /></td>
-                <td><input type="text" size="1"  form="form${val['id']}" value="${val['name']}" name="name" /></td>
-                <td><input type="text" size="1"  form="form${val['id']}" value="${val['openingHours']}" name="openingHours" /></td>
-                <td><input type="text" size="1"  form="form${val['id']}" value="${val['telephone']}" name="telephone" /></td>
-                <td><input type="text" size="1"  form="form${val['id']}" value="${val['country']}" name="country" /></td>
-                <td><input type="text" size="1"  form="form${val['id']}" value="${val['locality']}" name="locality" /></td>
-                <td><input type="text" size="1"  form="form${val['id']}" value="${val['region']}" name="region" /></td>
-                <td><input type="text" size="1"  form="form${val['id']}" value="${val['code']}" name="code" /></td>
-                <td><input type="text" size="1"  form="form${val['id']}" value="${val['streetAddress']}" name="streetAddress" /></td>
-            </tr>`;
+  <tr>
+  <td class="action"><span class="delete">&#128465;</span><span class="edit">&#128427;</span></td>
+  <td class="input" role="textbox" name="id" />${val['id']}</td>
+  <td class="input" role="textbox" name="name" contenteditable>${val['name']}         </td>
+  <td class="input" role="textbox" name="openingHours" contenteditable>${val['openingHours']} </td>
+  <td class="input" role="textbox" name="telephone" contenteditable>${val['telephone']}    </td>
+  <td class="input" role="textbox" name="country" contenteditable>${val['country']}      </td>
+  <td class="input" role="textbox" name="locality" contenteditable>${val['locality']}     </td>
+  <td class="input" role="textbox" name="region" contenteditable>${val['region']}       </td>
+  <td class="input" role="textbox" name="code" contenteditable>${val['code']}         </td>
+  <td class="input" role="textbox" name="streetAddress" contenteditable>${val['streetAddress']}</td>
+</tr>`;
 }
+
 const header = (method, body2b) => {
   return { method, headers: { 'Content-Type': 'application/json', }, body: JSON.stringify(body2b), }
 }
 const prepFetch = async (method, book) => {
   return await fetch('index.php', header(method, book));
 }
-const fetchAll = async (order, dir) => {
-  return (await fetch(`index.php?order=${order}&dir=${dir}`)).json()
+const fetchAll = async (order, dir, search={}) => {
+  query=new URLSearchParams({order, dir, ...search}).toString()
+  const response = await fetch('index.php?' + query);
+  return response.json();
 };
-const addAdressbook = async (book) => {
+const addBook = async (book) => {
   const response = await prepFetch('POST', book);
   makeTable();
   return response.json();
 }
-const deleteAdressbook = async (id) => {
+const deleteBook = async (id) => {
   const response = await prepFetch('DELETE', id);
   makeTable();
   return response.json();
 }
-const editAdressbook = async (book) => {
+const editBook = async (book) => {
   const response = await prepFetch('PUT', book);
   makeTable();
 }
@@ -57,22 +52,27 @@ const makeTable = async (order = Gorder, dir = Gdir) => {
   tbody.innerHTML = '';
   data.forEach(val => addRow(val));
 
-  document.querySelectorAll('.edit').forEach(el => { el.addEventListener('click', editBook) });
-  document.querySelectorAll('.delete').forEach(el => { el.addEventListener('click', deleteBook) });
+  document.querySelectorAll('.action .edit').forEach(el => { el.addEventListener('click', e => editBook(jsonifyParentRow(e))) });
+  document.querySelectorAll('.action .delete').forEach(el => { el.addEventListener('click', e => deleteBook(jsonifyParentRow(e))) });
 }
-
-const jsonifyParentForm = (event) => {
-  event.preventDefault();
-  const data = new FormData(event.target.parentElement);
-  return JSON.stringify(Object.fromEntries(data.entries()));
+const jsonifyParentRow = (event) => {
+  let row = event.target.parentElement.parentElement;
+  let inputs = [].slice.call(row.querySelectorAll('.input'));
+  let obj = {};
+  inputs.map(inp => obj[inp.getAttribute('name')] = inp.innerText.trim());
+  return JSON.stringify(obj);
 }
-                                                                            // 9660 == "▼".charCodeAt(0)
+// 9660 == "▼".charCodeAt(0)
 const sort = (e) => { makeTable(e.target.name, e.target.innerHTML.charCodeAt(0) == 9660 ? 'desc' : 'asc') }
-const deleteBook = e => deleteAdressbook(jsonifyParentForm(e));
-const editBook = e => editAdressbook(jsonifyParentForm(e));
-const addBook = e => addAdressbook(jsonifyParentForm(e));
+const search = (e) => { fetchAll(Gorder, Gdir, searchBooks(e)) }
 
-document.querySelector('.add').addEventListener("click", addBook, false);
+const searchBooks = (e) => {
+  let ursl = JSON.parse(jsonifyParentRow(e))
+  Object.keys(ursl).forEach(key => ursl[key] === "" && delete ursl[key]);
+  return ursl
+  // return new URLSearchParams(ursl).toString()
+};
+document.querySelector('.action .add').addEventListener("click", e => addBook(jsonifyParentRow(e)), false);
 document.querySelectorAll('thead a').forEach(href => href.addEventListener("click", sort, false));
 document.querySelectorAll('.search').forEach(href => href.addEventListener("click", search, false));
 
