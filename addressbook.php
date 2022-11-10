@@ -45,11 +45,13 @@ class addressbook
     }
     public function delete($data)
     {
-        $data->id = preg_replace('/\D/m', '', $data->id);
-        $sql = "DELETE FROM addressbook WHERE id = :id";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([':id' => $data->id]);
-        return $stmt->rowCount();
+
+        if ($data->id && preg_match('/\D/m', '', $data->id)) {
+            $sql = "DELETE FROM addressbook WHERE id = :id";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([':id' => $data->id]);
+            return $stmt->rowCount();
+        }
     }
     public function add($data)
     {
@@ -72,9 +74,8 @@ class addressbook
     public function sanatize($data)
     {
         foreach ($data as $key => $value) {
-            $data->$key = htmlspecialchars(trim($value));// trim(preg_replace('/(\W+)/m', ' ', $value))
+            $data->$key = htmlspecialchars(trim($value)); // trim(preg_replace('/(\W+)/m', ' ', $value))
         }
         return $data;
     }
 }
-
