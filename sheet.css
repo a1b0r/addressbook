@@ -1,49 +1,58 @@
+table {
+    table-layout: auto;
+    border-collapse: collapse;
+    width: auto;
+}
 
-    form {
-        display: inline;
+table td {
+    border: 1px solid #ccc;
+}
 
-        margin: 0;
 
-    }
+tr:nth-child(even) {
+    background-color: #f2f2f2
+}
 
-    table {
-        table-layout: auto;
-        border-collapse: collapse;
-        width: auto;
-    }
 
-    table td {
-        border: 1px solid #ccc;
-    }
+td.action {
+    display: inline-block;
+    width: 32px;
+}
 
-    input[type=text] {
-        width: auto;
-    }
+.input {
+    
+    border: 3px solid #ccc;
+    background-color: white;
+    font-family: inherit;
+    font-size: inherit;
+    cursor: text;
+    padding: 1px 6px;
+}
 
-    tr:nth-child(even) {
-        background-color: #f2f2f2
-    }
-    label{
-        
-        cursor: pointer;
-    }
-    input[type=submit] {
-        border: none;
-        outline: none;
-        background: none;
-        cursor: pointer;
-        padding: 0;
-        text-decoration: underline;
-        font-family: inherit;
-        font-size: inherit;
-    }
+.action .add {
+    font-size: 16;
+    cursor: pointer;
+    margin: 0;
+    vertical-align: middle;
+}
 
-    input[type=submit]:hover {
-        color: #0000EE;
-    }
+.action .delete {
+    font-size: 16;
+    cursor: pointer;
+    margin: 0;
+    vertical-align: middle;
+}
 
-    td.action {
-        display: inline-block;
-        /* width: 32px; */
-        vertical-align: middle;
-    }
+.action .edit {
+    font-size: 16;
+    cursor: pointer;
+    margin: 0;
+    vertical-align: middle;
+}
+
+.action .search {
+    font-size: 16;
+    cursor: pointer;
+    margin: 0;
+    vertical-align: middle;
+}
