@@ -3,8 +3,8 @@
 $curl = curl_init();
 
 curl_setopt_array($curl, [
-    CURLOPT_PORT => "8000",
-    CURLOPT_URL => "http://127.0.0.1:8000/api/addressbook?=",
+    CURLOPT_PORT => "80",
+    CURLOPT_URL => "localhost/api/addressbook?=",
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_ENCODING => "",
     CURLOPT_MAXREDIRS => 10,
@@ -27,13 +27,13 @@ curl_setopt_array($curl, [
   } else {
     echo $response;
   }
-  echo PHP_EOL;
+  echo '<hr>';
 
 $curl = curl_init();
 
 curl_setopt_array($curl, [
-  CURLOPT_PORT => "8000",
-  CURLOPT_URL => "http://127.0.0.1:8000/api/addressbook",
+  CURLOPT_PORT => "80",
+  CURLOPT_URL => "localhost/api/addressbook",
   CURLOPT_RETURNTRANSFER => true,
   CURLOPT_ENCODING => "",
   CURLOPT_MAXREDIRS => 10,
@@ -56,14 +56,14 @@ if ($err) {
 } else {
   echo $response;
 }
-echo PHP_EOL;
+echo '<hr>';
 
 
 $curl = curl_init();
 
 curl_setopt_array($curl, [
-  CURLOPT_PORT => "8000",
-  CURLOPT_URL => "http://127.0.0.1:8000/api/addressbook",
+  CURLOPT_PORT => "80",
+  CURLOPT_URL => "localhost/api/addressbook",
   CURLOPT_RETURNTRANSFER => true,
   CURLOPT_ENCODING => "",
   CURLOPT_MAXREDIRS => 10,
@@ -84,13 +84,13 @@ if ($err) {
 } else {
   echo $response;
 }
-echo PHP_EOL;
+echo '<hr>';
 
 $curl = curl_init();
 
 curl_setopt_array($curl, [
-  CURLOPT_PORT => "8000",
-  CURLOPT_URL => "http://127.0.0.1:8000/api/addressbook",
+  CURLOPT_PORT => "80",
+  CURLOPT_URL => "localhost/api/addressbook",
   CURLOPT_RETURNTRANSFER => true,
   CURLOPT_ENCODING => "",
   CURLOPT_MAXREDIRS => 10,
@@ -113,4 +113,4 @@ if ($err) {
 } else {
   echo $response;
 }
-echo PHP_EOL;
+echo '<hr>';
