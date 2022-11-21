@@ -32,9 +32,7 @@ CREATE TABLE `address` (
   `locality` text CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci,
   `region` text CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci,
   `code` text CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci,
-  `streetAddress` text CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP
+  `streetAddress` text CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 -- Indexes for dumped tables
