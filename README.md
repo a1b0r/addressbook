@@ -7,3 +7,7 @@ Build a simple Adressbook where a user can add/edit/delete addressbook entries, 
 docker-compose -f "docker-compose.yml" up -d --build
 ```
 [Browse](http://locaclhost:8000)
+["test"](http://locaclhost:8000/test.php)
+[API](http://locaclhost:8000/api/addressbook)
+
+
