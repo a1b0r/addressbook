@@ -12,27 +12,28 @@ class AddressbookController extends BaseController
         'DELETE' => 'delete'
       ];
 
-    public function __construct()
+    public function __construct(\App\Model\Addressbook $model)
     {
-        $this->model = new \App\Model\Addressbook();
+        $this->model = $model;
     }
 
-    public function getUrls()
+    public function getUrls(): array
     {
         return $this->urls;
     }
-    public function do($requestMethode)
+
+    public function do(string $requestMethode): void
     {
             $this->{$this->methode[$requestMethode]}();
     }
 
-    public function index()
+    public function index(): void
     {
         $data = $this->model->readAll();
         $this->sendOutput(json_encode($data));
     }
 
-    public function create()
+    public function create(): void
     {
         if (!($data = $this->getInputData())) {
             $this->sendError(400, "No data received");
@@ -42,7 +43,7 @@ class AddressbookController extends BaseController
         $this->sendOutput(json_encode($id));
     }
 
-    public function read()
+    public function read(): void
     {
         if ($data = $this->getInputData()) {
             $data = $this->model->read($data);
@@ -52,23 +53,35 @@ class AddressbookController extends BaseController
             $this->sendOutput(json_encode($data));
     }
 
-    public function update()
+    public function update() : void
     {
         $data = $this->getInputData();
         $result = $this->model->update($data);
         $this->sendOutput(json_encode($result));
     }
 
-    public function delete()
+    public function delete(): void
     {
         $data = $this->getInputData();
-        $result = $this->model->delete($data);
+        $model = $this->model->get($data['id']);
+        if ($model === null) {
+            $this->sendOutput(json_encode(['error' => 'Record not found']));
+            return;
+        }
+        $result = $this->model->delete($model);
         $this->sendOutput(json_encode($result));
     }
 
-    public function getInputData()
+    public function getInputData(): ?array
     {
-        $data = json_decode(file_get_contents('php://input'), true);
+        $data = null;
+        $rawData = file_get_contents('php://input');
+        if (false !== $rawData) {
+            $data = json_decode($rawData, true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                $data = null;
+            }
+        }
         return $data;
     }
 }

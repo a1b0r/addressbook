@@ -20,8 +20,8 @@ class BaseModel
 
         $columns = $this->columns;
         unset($columns[0]);
-        $sql = "INSERT INTO $this->tableName (" . implode(", ", $columns ) .
-        ") VALUES (" . ":" . implode(", :", $columns ) . ")";
+        $sql = "INSERT INTO $this->tableName (" . implode(", ", $columns) .
+            ") VALUES (" . ":" . implode(", :", $columns) . ")";
         try {
             $this->db->execute($sql, $data);
             return $this->db->lastInsertId();
@@ -31,7 +31,7 @@ class BaseModel
         }
     }
 
-    public function read(array $data)
+    public function read(array $data): array
     {
         $sql = "SELECT * FROM $this->tableName WHERE " .
             implode(" = : AND ", $this->columns) . " = : ";
@@ -39,30 +39,27 @@ class BaseModel
             return $this->db->query($sql, $data);
         } catch (\PDOException $e) {
             echo "Query failed: " . $e->getMessage();
-            return false;
+            return [];
         }
     }
 
-    public function readAll()
+    public function readAll(): array
     {
-
         $sql = "SELECT * FROM $this->tableName ORDER BY id DESC";
         try {
-        return $this->db->query($sql /*, ["order" => $order,"dir" => $dir]*/);
+            return $this->db->query($sql /*, ["order" => $order,"dir" => $dir]*/);
         } catch (\PDOException $e) {
             echo "Query failed: " . $e->getMessage();
-            return false;
+            return [];
         }
     }
+
     public function update(array $data): bool
     {
-        $sql = "UPDATE $this->tableName SET ";
-        $sql .= implode(" = ?, ", $this->columns);
-        $sql .= " = ? WHERE id = ?";
-        $params = array_values($data);
-        $params[] = $data["id"];
+        $sql = "UPDATE $this->tableName SET " .
+            implode(" = ?, ", $this->columns) . " = ? WHERE id = ?";
         try {
-            $this->db->execute($sql, $params);
+            $this->db->query($sql,  [...array_values($data), $data["id"]]);
             return true;
         } catch (\PDOException $e) {
             echo "Query failed: " . $e->getMessage();
