@@ -1,10 +1,60 @@
 <link href="dist/css/tabulator.min.css" rel="stylesheet">
 <script type="text/javascript" src="dist/js/tabulator.min.js"></script>
+<style>
+    .input {
 
+        border: 3px solid #ccc;
+        background-color: white;
+        font-family: inherit;
+        font-size: inherit;
+        cursor: text;
+        padding: 1px 6px;
+    }
 
+    .action .add {
+        font-size: 16;
+        cursor: pointer;
+        margin: 0;
+        vertical-align: middle;
+    }
+</style>
+<table>
+    <tr>
+        <td class="action">
+            <P class="add">&#128427;</P>
+        </td>
+
+        <td class="input" role="textbox" name="id"> </td>
+        <td class="input" role="textbox" name="name" contenteditable> </td>
+        <td class="input" role="textbox" name="openingHours" contenteditable> </td>
+        <td class="input" role="textbox" name="telephone" contenteditable> </td>
+        <td class="input" role="textbox" name="country" contenteditable> </td>
+        <td class="input" role="textbox" name="locality" contenteditable> </td>
+        <td class="input" role="textbox" name="region" contenteditable> </td>
+        <td class="input" role="textbox" name="code" contenteditable> </td>
+        <td class="input" role="textbox" name="streetAddress" contenteditable></td>
+    </tr>
+</table>
 <div id="example-table"></div>
 
 <script>
+
+
+    const addBook = async (book) => {
+        const response = await fetch('api/addressbook', { method:'POST', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify(book), });
+        table.setData("api/addressbook");
+        return response.json();
+    }
+    const jsonifyParentRow = (event) => {
+        let row = event.target.parentElement.parentElement;
+        let inputs = [].slice.call(row.querySelectorAll('.input'));
+        let obj = {};
+        inputs.map(inp => obj[inp.getAttribute('name')] = inp.innerText.trim());
+        return obj;
+        return JSON.stringify(obj);
+    }
+
+    document.querySelector('.action .add').addEventListener("click", e => addBook(jsonifyParentRow(e)), false);
     var minMaxFilterEditor = function (cell, onRendered, success, cancel, editorParams) {
 
         var end;
