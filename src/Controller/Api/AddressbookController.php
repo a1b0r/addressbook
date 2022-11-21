@@ -63,12 +63,7 @@ class AddressbookController extends BaseController
     public function delete(): void
     {
         $data = $this->getInputData();
-        $model = $this->model->get($data['id']);
-        if ($model === null) {
-            $this->sendOutput(json_encode(['error' => 'Record not found']));
-            return;
-        }
-        $result = $this->model->delete($model);
+        $result = $this->model->delete($data);
         $this->sendOutput(json_encode($result));
     }
 

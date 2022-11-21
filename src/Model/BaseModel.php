@@ -23,7 +23,7 @@ class BaseModel
         $sql = "INSERT INTO $this->tableName (" . implode(", ", $columns) .
             ") VALUES (" . ":" . implode(", :", $columns) . ")";
         try {
-            $this->db->execute($sql, $data);
+            $this->db->query($sql, $data);
             return $this->db->lastInsertId();
         } catch (\PDOException $e) {
             echo "Query failed: " . $e->getMessage();
@@ -59,7 +59,7 @@ class BaseModel
         $sql = "UPDATE $this->tableName SET " .
             implode(" = ?, ", $this->columns) . " = ? WHERE id = ?";
         try {
-            $this->db->query($sql,  [...array_values($data), $data["id"]]);
+            $this->db->query($sql,  [...array_values($data), @$data["id"]]);
             return true;
         } catch (\PDOException $e) {
             echo "Query failed: " . $e->getMessage();
