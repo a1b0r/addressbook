@@ -37,6 +37,7 @@ services:
     environment:
       - HOME=/home/composer
     working_dir: /app
+    
   # phpmyadmin:
   #     image: phpmyadmin/phpmyadmin
   #     container_name: pma
