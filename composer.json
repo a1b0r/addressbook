@@ -1,0 +1,9 @@
+{
+    "name": "a1bor/addressbook",
+    
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    }
+}
