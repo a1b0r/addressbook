@@ -20,6 +20,7 @@ class BaseModel
 
         $columns = $this->columns;
         unset($columns[0]);
+        $data=$this->sanatize($data);
         $sql = "INSERT INTO $this->tableName (" . implode(", ", $columns) .
             ") VALUES (" . ":" . implode(", :", $columns) . ")";
         try {
@@ -33,6 +34,7 @@ class BaseModel
 
     public function read(array $data): array
     {
+        $data=$this->sanatize($data);
         $sql = "SELECT * FROM $this->tableName WHERE " .
             implode(" = : AND ", $this->columns) . " = : ";
         try {
@@ -56,6 +58,7 @@ class BaseModel
 
     public function update(array $data): bool
     {
+        $data=$this->sanatize($data);
         $sql = "UPDATE $this->tableName SET " .
             implode(" = ?, ", $this->columns) . " = ? WHERE id = ?";
         try {
@@ -69,6 +72,7 @@ class BaseModel
 
     public function delete(array $data): bool
     {
+        $data=$this->sanatize($data);
         $sql = "DELETE FROM $this->tableName WHERE id = :id";
         $params = ["id" => $data["id"]];
         try {
@@ -78,5 +82,15 @@ class BaseModel
             echo "Query failed: " . $e->getMessage();
             return false;
         }
+    }
+    
+
+    public function sanatize(array $data): array
+    {
+        $sanatized = [];
+        foreach ($data as $key => $value) {
+            $sanatized[$key] = htmlspecialchars($value);
+        }
+        return $sanatized;
     }
 }
